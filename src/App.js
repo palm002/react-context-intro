@@ -3,28 +3,26 @@ import './App.css';
 
 const MyContext = React.createContext();
 
-class MyProvider extends React.Component {
-  state = {
+const MyProvider = (props) => {
+  const [data, setData] = React.useState({
     name: 'Mirko',
     age: 100,
     likesIceCream: true
-  };
+  });
 
-  render() {
-    return (
-      <MyContext.Provider
-        value={{
-          ...this.state,
-          growAYearOlder: () => this.setState({ age: this.state.age + 1 })
-        }}
-      >
-        {this.props.children}
-      </MyContext.Provider>
-    );
-  }
-}
+  return (
+    <MyContext.Provider
+      value={{
+        data,
+        growAYearOlder: () => setData(data => ({ ...data, age: data.age + 1 }))
+      }}
+    >
+      {props.children}
+    </MyContext.Provider>
+  );
+};
 
-const Family = () => (
+const Family = (props) => (
   <div className="family">
     <Person />
   </div>
@@ -37,8 +35,8 @@ class Person extends React.Component {
         <MyContext.Consumer>
           {value => (
             <>
-              <p>Name: {value.name}</p>
-              <p>Age: {value.age}</p>
+              <p>Name: {value.data.name}</p>
+              <p>Age: {value.data.age}</p>
               <button onClick={value.growAYearOlder}>+1</button>
             </>
           )}
