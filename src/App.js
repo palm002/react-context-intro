@@ -1,26 +1,63 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const MyContext = React.createContext();
+
+class MyProvider extends React.Component {
+  state = {
+    name: 'Mirko',
+    age: 100,
+    likesIceCream: true
+  };
+
+  render() {
+    return (
+      <MyContext.Provider
+        value={{
+          ...this.state,
+          growAYearOlder: () => this.setState({ age: this.state.age + 1 })
+        }}
+      >
+        {this.props.children}
+      </MyContext.Provider>
+    );
+  }
+}
+
+const Family = () => (
+  <div className="family">
+    <Person />
+  </div>
+);
+
+class Person extends React.Component {
+  render() {
+    return (
+      <div className="person">
+        <MyContext.Consumer>
+          {value => (
+            <>
+              <p>Name: {value.name}</p>
+              <p>Age: {value.age}</p>
+              <button onClick={value.growAYearOlder}>+1</button>
+            </>
+          )}
+        </MyContext.Consumer>
+      </div>
+    );
+  }
+}
+
+class App extends React.Component {
+  render() {
+    return (
+      <MyProvider>
+        <div className="">
+          <Family />
+        </div>
+      </MyProvider>
+    );
+  }
 }
 
 export default App;
